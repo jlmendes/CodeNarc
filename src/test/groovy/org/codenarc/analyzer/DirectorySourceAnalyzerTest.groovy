@@ -35,10 +35,10 @@ import org.codenarc.rule.FakeCountRule
  * @author Chris Mair
  */
 class DirectorySourceAnalyzerTest extends AbstractTestCase {
-    static final BASE_DIR = '/usr'
-    def analyzer
-    def ruleSet
-    def testCountRule
+    private static final BASE_DIR = '/usr'
+    private analyzer
+    private ruleSet
+    private testCountRule
 
     @Test
     void testAnalyze_NullRuleSet() {
@@ -48,14 +48,14 @@ class DirectorySourceAnalyzerTest extends AbstractTestCase {
 
     @Test
     void testAnalyze_BaseDirectoryNullAndSourceDirectoriesNull() {
-        shouldFailWithMessageContaining(['baseDirectory','sourceDirectories']) { analyzer.analyze(ruleSet) }
+        shouldFailWithMessageContaining(['baseDirectory', 'sourceDirectories']) { analyzer.analyze(ruleSet) }
     }
 
     @Test
     void testAnalyze_BaseDirectoryEmptyAndSourceDirectoriesEmpty() {
         analyzer.baseDirectory = ''
         analyzer.sourceDirectories = []
-        shouldFailWithMessageContaining(['baseDirectory','sourceDirectories']) { analyzer.analyze(ruleSet) }
+        shouldFailWithMessageContaining(['baseDirectory', 'sourceDirectories']) { analyzer.analyze(ruleSet) }
     }
 
     @Test

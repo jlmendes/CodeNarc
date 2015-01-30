@@ -18,6 +18,7 @@ ruleset {
     AssignmentInConditional 
     BigDecimalInstantiation 
     BitwiseOperatorInConditional 
+    BlankLineBeforePackage 
     BooleanGetBoolean 
     BooleanMethodReturnsNull 
     BracesForClass 
@@ -47,6 +48,7 @@ ruleset {
     CloneableWithoutClone 
     CloseWithoutCloseable 
     ClosureAsLastMethodParameter 
+    ClosureStatementOnOpeningLineOfMultipleLineClosure 
     CollectAllIsDeprecated 
     CompareToWithoutComparable 
     ComparisonOfTwoConstants 
@@ -55,6 +57,7 @@ ruleset {
     ConfusingMethodName 
     ConfusingMultipleReturns 
     ConfusingTernary 
+    ConsecutiveBlankLines 
     ConsecutiveLiteralAppends 
     ConsecutiveStringConcatenation 
     ConstantAssertExpression 
@@ -96,6 +99,7 @@ ruleset {
     EqualsAndHashCode 
     EqualsOverloaded 
     ExceptionExtendsError 
+    ExceptionExtendsThrowable 
     ExceptionNotThrown 
     ExplicitArrayListInstantiation 
     ExplicitCallToAndMethod 
@@ -122,6 +126,7 @@ ruleset {
     FactoryMethodName 
     FieldName 
     FileCreateTempFile 
+    FileEndsWithoutNewline 
     FinalClassWithProtectedMember 
     ForLoopShouldBeWhileLoop 
     ForStatementBraces 
@@ -134,6 +139,7 @@ ruleset {
     GrailsDomainWithServiceReference 
     GrailsDuplicateConstraint 
     GrailsDuplicateMapping 
+    GrailsMassAssignment 
     GrailsPublicControllerMethod 
     GrailsServletContextReference 
     GrailsSessionReference   // DEPRECATED
@@ -148,12 +154,15 @@ ruleset {
     IllegalClassReference 
     IllegalPackageReference 
     IllegalRegex 
+    IllegalString 
+    IllegalSubclass 
     ImplementationAsType 
     ImportFromSamePackage 
     ImportFromSunPackages 
     InconsistentPropertyLocking 
     InconsistentPropertySynchronization 
     InsecureRandom 
+    Instanceof 
     IntegerGetInteger 
     InterfaceName 
     InvertedIfElse 
@@ -164,6 +173,7 @@ ruleset {
     JUnitLostTest 
     JUnitPublicField 
     JUnitPublicNonTestMethod 
+    JUnitPublicProperty 
     JUnitSetUpCallsSuper 
     JUnitStyleAssertions 
     JUnitTearDownCallsSuper 
@@ -176,6 +186,7 @@ ruleset {
     JdbcResultSetReference 
     JdbcStatementReference 
     LineLength 
+    LocaleSetDefault 
     LoggerForDifferentClass 
     LoggerWithWrongModifiers 
     LoggingSwallowsStacktrace 
@@ -184,15 +195,22 @@ ruleset {
     MethodName 
     MethodSize 
     MisorderedStaticImports 
+    MissingBlankLineAfterImports 
+    MissingBlankLineAfterPackage 
     MissingNewInThrowStatement 
     MultipleLoggers 
+    MultipleUnaryOperators 
     NestedBlockDepth 
+    NestedForLoop 
     NestedSynchronization 
+    NoDef 
+    NoWildcardImports 
     NonFinalPublicField 
     NonFinalSubclassOfSensitiveInterface 
     ObjectFinalize 
     ObjectOverrideMisspelledMethodName 
     PackageName 
+    PackageNameMatchesFilePath 
     ParameterName 
     ParameterReassignment 
     PrintStackTrace 
@@ -223,6 +241,7 @@ ruleset {
     SpaceAfterSwitch 
     SpaceAfterWhile 
     SpaceAroundClosureArrow 
+    SpaceAroundMapEntryColon 
     SpaceAroundOperator 
     SpaceBeforeClosingBrace 
     SpaceBeforeOpeningBrace 
@@ -257,12 +276,15 @@ ruleset {
     ThrowNullPointerException 
     ThrowRuntimeException 
     ThrowThrowable 
+    ToStringReturnsNull 
+    TrailingWhitespace 
     UnnecessaryBigDecimalInstantiation 
     UnnecessaryBigIntegerInstantiation 
     UnnecessaryBooleanExpression 
     UnnecessaryBooleanInstantiation 
     UnnecessaryCallForLastElement 
     UnnecessaryCallToSubstring 
+    UnnecessaryCast 
     UnnecessaryCatchBlock 
     UnnecessaryCollectCall 
     UnnecessaryCollectionCall 
@@ -293,11 +315,13 @@ ruleset {
     UnnecessaryParenthesesForMethodCallWithClosure 
     UnnecessaryPublicModifier 
     UnnecessaryReturnKeyword 
+    UnnecessarySafeNavigationOperator 
     UnnecessarySelfAssignment 
     UnnecessarySemicolon 
     UnnecessaryStringInstantiation 
     UnnecessarySubstring 
     UnnecessaryTernaryExpression 
+    UnnecessaryToString 
     UnnecessaryTransientModifier 
     UnsafeArrayDeclaration 
     UnsafeImplementationAsMap 

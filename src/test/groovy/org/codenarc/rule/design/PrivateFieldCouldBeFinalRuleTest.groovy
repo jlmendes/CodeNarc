@@ -380,7 +380,6 @@ class PrivateFieldCouldBeFinalRuleTest extends AbstractRuleTestCase {
         assertSingleViolation(SOURCE, 11, 'private int count', VIOLATION_MESSAGE)
     }
 
-
     @Test
     void testApplyTo_IgnoreFieldNames_NoViolations() {
         final SOURCE = '''
@@ -412,6 +411,54 @@ class PrivateFieldCouldBeFinalRuleTest extends AbstractRuleTestCase {
                 private int count = 0
             }
         '''
+        assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_ignoreJpaEntities_Entity_NoViolations() {
+        final SOURCE = '''
+            @Entity
+            class MyClass {
+                private DateTime created = DateTime.now()
+            }
+        '''
+        rule.ignoreJpaEntities = true
+        assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_ignoreJpaEntities_fullPackageEntity_NoViolations() {
+        final SOURCE = '''
+            @javax.persistence.Entity
+            class MyClass {
+                private DateTime created = DateTime.now()
+            }
+        '''
+        rule.ignoreJpaEntities = true
+        assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_ignoreJpaEntities_MappedSuperclass_NoViolations() {
+        final SOURCE = '''
+            @MappedSuperclass
+            class MyClass {
+                private DateTime created = DateTime.now()
+            }
+        '''
+        rule.ignoreJpaEntities = true
+        assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_ignoreJpaEntities_fullPackageMappedSuperclass_NoViolations() {
+        final SOURCE = '''
+            @javax.persistence.MappedSuperclass
+            class MyClass {
+                private DateTime created = DateTime.now()
+            }
+        '''
+        rule.ignoreJpaEntities = true
         assertNoViolations(SOURCE)
     }
 

@@ -30,7 +30,7 @@ import org.codehaus.groovy.ast.ASTNode
  * This checks method/class/interface declarations, closure expressions and block statements.
  *
  * A closure expression followed by a dot operator (.), a comma, a closing parenthesis, the
- * spread-dot operator (*.) or the null-safe operator (?.) does not cause a violation.
+ * spread-dot operator (*.), a semicolon or the null-safe operator (?.) does not cause a violation.
  *
  * @author Chris Mair
  */
@@ -100,10 +100,12 @@ class SpaceAfterClosingBraceAstVisitor extends AbstractSpaceAroundBraceAstVisito
     void visitClosureExpression(ClosureExpression expression) {
         isFirstVisit(expression.code)   // Register the code block so that it will be ignored in visitBlockStatement()
         if (isFirstVisit(expression)) {
-            def line = lastSourceLineOrEmpty(expression)
-            def lastCol = expression.lastColumnNumber
-            int lastIndex = indexOfClosingBrace(line, lastCol)
-            if (isNotWhitespace(line, lastIndex + 2) && isNotAllowedCharacter(line, lastIndex + 2)) {
+            String line = lastSourceLineOrEmpty(expression)
+            int lastCol = expression.lastColumnNumber
+            int investigatedIndex = indexOfClosingBrace(line, lastCol) + 2
+            if (isNotWhitespace(line, investigatedIndex) &&
+                    isNotAllowedCharacterAfterClosure(line, investigatedIndex) &&
+                    isNotInsideGString()) {
                 addOpeningBraceViolation(expression, 'closure')
             }
         }
@@ -118,8 +120,8 @@ class SpaceAfterClosingBraceAstVisitor extends AbstractSpaceAroundBraceAstVisito
         super.visitMapEntryExpression(expression)
     }
 
-    private boolean isNotAllowedCharacter(String line, int index) {
-        index >= 1 && index <= line.size() && !['.', ',', ')', '*', '?'].contains(line[index - 1])
+    private boolean isNotAllowedCharacterAfterClosure(String line, int index) {
+        return index in 1..line.size() && !(line[index - 1] in ['.', ',', ')', '*', '?', ';'])
     }
 
     private void addOpeningBraceViolation(ASTNode node, String keyword) {

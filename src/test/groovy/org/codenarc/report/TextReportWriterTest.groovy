@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright 2014 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,49 +15,16 @@
  */
 package org.codenarc.report
 
-import org.codenarc.AnalysisContext
-import org.codenarc.results.DirectoryResults
-import org.codenarc.results.FileResults
-import org.codenarc.rule.StubRule
-import org.codenarc.rule.Violation
-import org.codenarc.test.AbstractTestCase
-import org.junit.Before
-import org.junit.Test
-
-import java.text.DateFormat
-
-import static org.codenarc.test.TestUtil.captureSystemOut
-import static org.codenarc.test.TestUtil.shouldFailWithMessageContaining
-import static org.junit.Assert.assertEquals
-
 /**
  * Tests for TestReportWriter
  *
  * @author Chris Mair
  * @author Hamlet D'Arcy
  */
-class TextReportWriterTest extends AbstractTestCase {
+class TextReportWriterTest extends AbstractTextReportWriterTestCase {
 
-    private static final LINE1 = 11
-    private static final LINE2 = 2
-    private static final LINE3 = 333
-    private static final SOURCE_LINE1 = 'if (count < 23 && index <= 99) {'
-    private static final SOURCE_LINE3 = 'throw new Exception() // Something bad happened'
-    private static final MESSAGE2 = 'bad stuff: !@#$%^&*()_+<>'
-    private static final MESSAGE3 = 'Other info'
-    private static final VIOLATION1 = new Violation(rule:new StubRule(name:'Rule1', priority:1), lineNumber:LINE1, sourceLine:SOURCE_LINE1)
-    private static final VIOLATION2 = new Violation(rule:new StubRule(name:'AnotherRule', priority:2), lineNumber:LINE2, message:MESSAGE2)
-    private static final VIOLATION3 = new Violation(rule:new StubRule(name:'BadStuff', priority:3), lineNumber:LINE3, sourceLine:SOURCE_LINE3, message:MESSAGE3 )
-    private static final NEW_REPORT_FILE = 'target/NewTextReport.txt'
-    private static final TITLE = 'My Cool Project'
-    private static final SRC_DIR1 = 'c:/MyProject/src/main/groovy'
-    private static final SRC_DIR2 = 'c:/MyProject/src/test/groovy'
-    private static final VERSION_FILE = 'src/main/resources/codenarc-version.txt'
-    private static final VERSION = new File(VERSION_FILE).text
-    private static final TIMESTAMP_DATE = new Date(1262361072497)
-    private static final FORMATTED_TIMESTAMP = DateFormat.getDateTimeInstance().format(TIMESTAMP_DATE)
     private static final REPORT_TEXT = """
-CodeNarc Report: My Cool Project - ${FORMATTED_TIMESTAMP}
+CodeNarc Report: My Cool Project - ${formattedTimestamp()}
 
 Summary: TotalFiles=6 FilesWithViolations=3 P1=3 P2=2 P3=3
 
@@ -75,10 +42,10 @@ File: src/main/dao/MyOtherDao.groovy
     Violation: Rule=Rule1 P=1 Line=11 Src=[if (count < 23 && index <= 99) {]
     Violation: Rule=AnotherRule P=2 Line=2 Msg=[bad stuff: !@#\$%^&*()_+<>]
 
-[CodeNarc (http://www.codenarc.org) v${VERSION}]
+[CodeNarc (http://www.codenarc.org) v${version()}]
 """.trim()
     private static final REPORT_TEXT_MAX_PRIORITY = """
-CodeNarc Report: My Cool Project - ${FORMATTED_TIMESTAMP}
+CodeNarc Report: My Cool Project - ${formattedTimestamp()}
 
 Summary: TotalFiles=6 FilesWithViolations=2 P1=3
 
@@ -89,112 +56,19 @@ File: src/main/MyAction.groovy
 File: src/main/dao/MyOtherDao.groovy
     Violation: Rule=Rule1 P=1 Line=11 Src=[if (count < 23 && index <= 99) {]
 
-[CodeNarc (http://www.codenarc.org) v${VERSION}]
+[CodeNarc (http://www.codenarc.org) v${version()}]
 """.trim()
 
-    private reportWriter
-    private analysisContext
-    private results, srcMainDaoDirResults
-    private stringWriter
-
-    @Test
-    void testWriteReport_Writer() {
-        reportWriter.writeReport(stringWriter, analysisContext, results)
-        def reportText = stringWriter.toString()
-        assertReportText(reportText)
+    protected TextReportWriter createReportWriter() {
+        return new TextReportWriter(title:TITLE)
     }
 
-    @Test
-    void testWriteReport_MaxPriority() {
-        reportWriter.maxPriority = 1
-        reportWriter.writeReport(stringWriter, analysisContext, results)
-        def reportText = stringWriter.toString()
-        assertReportText(reportText, REPORT_TEXT_MAX_PRIORITY)
+    protected String getReportTextMaxPriority() {
+        return REPORT_TEXT_MAX_PRIORITY
     }
 
-    @Test
-    void testWriteReport_WritesToDefaultReportFile() {
-        reportWriter.writeReport(analysisContext, results)
-        def reportFile = new File('CodeNarcReport.txt')
-        def reportText = reportFile.text
-        reportFile.delete()      // comment out to keep report file around for easy inspection
-        assertReportText(reportText)
-    }
-
-    @Test
-    void testWriteReport_WritesToConfiguredReportFile() {
-        reportWriter.outputFile = NEW_REPORT_FILE
-        reportWriter.writeReport(analysisContext, results)
-        def reportFile = new File(NEW_REPORT_FILE)
-        def reportText = reportFile.text
-        reportFile.delete()
-        assertReportText(reportText)
-    }
-
-    @Test
-    void testWriteReport_WritesToStandardOut() {
-        reportWriter.writeToStandardOut = true
-        def output = captureSystemOut {
-            reportWriter.writeReport(analysisContext, results)
-        }
-        assertReportText(output)
-    }
-
-    @Test
-    void testWriteReport_NullResults() {
-        shouldFailWithMessageContaining('results') { reportWriter.writeReport(analysisContext, null) }
-    }
-
-    @Test
-    void testWriteReport_NullAnalysisContext() {
-        shouldFailWithMessageContaining('analysisContext') { reportWriter.writeReport(null, results) }
-    }
-
-    @Test
-    void testDefaultOutputFile_CodeNarcReport() {
-        assert reportWriter.defaultOutputFile == 'CodeNarcReport.txt'
-    }
-
-    @Test
-    void testMaxPriority_DefaultsTo3() {
-        assert reportWriter.maxPriority == 3
-    }
-
-    @Before
-    void setUpTextReportWriterTest() {
-        reportWriter = new TextReportWriter(title:TITLE)
-        reportWriter.getTimestamp = { TIMESTAMP_DATE }
-
-        def srcMainDirResults = new DirectoryResults('src/main', 1)
-        srcMainDaoDirResults = new DirectoryResults('src/main/dao', 2)
-        def srcTestDirResults = new DirectoryResults('src/test', 3)
-        def srcMainFileResults1 = new FileResults('src/main/MyAction.groovy', [VIOLATION1, VIOLATION3, VIOLATION3, VIOLATION1, VIOLATION2])
-        def fileResultsMainDao1 = new FileResults('src/main/dao/MyDao.groovy', [VIOLATION3])
-        def fileResultsMainDao2 = new FileResults('src/main/dao/MyOtherDao.groovy', [VIOLATION2, VIOLATION1])
-
-        srcMainDirResults.addChild(srcMainFileResults1)
-        srcMainDirResults.addChild(srcMainDaoDirResults)
-        srcMainDaoDirResults.addChild(fileResultsMainDao1)
-        srcMainDaoDirResults.addChild(fileResultsMainDao2)
-
-        results = new DirectoryResults()
-        results.addChild(srcMainDirResults)
-        results.addChild(srcTestDirResults)
-
-        analysisContext = new AnalysisContext(sourceDirectories:[SRC_DIR1, SRC_DIR2])
-        stringWriter = new StringWriter()
-    }
-
-    @SuppressWarnings('JUnitStyleAssertions')
-    private void assertReportText(String actualText, String expectedText=REPORT_TEXT) {
-        def actualLines = actualText.readLines()
-        def expectedLines = expectedText.readLines()
-        actualLines.eachWithIndex { line, index ->
-            def lineNumber = "$index".padLeft(2)
-            println "$lineNumber: $line"
-            assertEquals("line=$line", expectedLines[index], line)
-        }
-        assertEquals(expectedLines.size(), actualLines.size())
+    protected String getReportText() {
+        return REPORT_TEXT
     }
 
 }

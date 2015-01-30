@@ -221,6 +221,21 @@ c        '''
             processItems(list.select { it.isReady() })          // no violation for closing parenthesis
             def names = records.findAll { it.age > 1 }*.name    // no violation for spread operator
             parameters?.collect { it?.type?.toString() }?.join(', ')    // no violation for null-safe operator
+            def closure = { println 7 };                       // no violation for comma
+        '''
+        assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_InnerClass_SemicolonFollowingClosingBrace_NoViolations() {
+        final SOURCE = '''
+            def service = new MyService() { };
+            def service2 = new MyService() {
+                @Override
+                void run() throws Exception {
+                     println 123
+                }
+            };
         '''
         assertNoViolations(SOURCE)
     }
@@ -233,14 +248,39 @@ c        '''
         assertNoViolations(SOURCE)
     }
 
-
     @Test
     void testApplyTo_CheckClosureMapEntryValue_False_NoViolations() {
         final SOURCE = '''
             def m = [a:123, b:{ println 7 }]
-       '''
+        '''
         rule.checkClosureMapEntryValue = false
         assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_ClosingBraceWithinStringLiteral_NoViolations() {
+        final SOURCE = '''
+            def doStuff() {
+                def things = new ObjectMapper().readValue('{}', new TypeReference<List<Thing>>() {} )
+            }
+        '''
+        assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_GStringWithClosure_NoViolations() {
+        assertNoViolations('''
+            def foo = 1
+            "I am a ${ -> foo }"
+        ''')
+    }
+
+    @Test
+    void testApplyTo_GStringWithClosure_AnyCharacterAllowedAfterClosureInsideGString_NoViolations() {
+        assertNoViolations('''
+            def foo = 1
+            "I am a ${ -> foo }0"
+        ''')
     }
 
     protected Rule createRule() {

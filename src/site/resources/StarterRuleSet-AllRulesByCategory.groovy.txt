@@ -45,6 +45,7 @@ ruleset {
     HardCodedWindowsFileSeparator 
     HardCodedWindowsRootDirectory 
     IntegerGetInteger 
+    MultipleUnaryOperators 
     RandomDoubleCoercedToZero 
     RemoveAllOnSelf 
     ReturnFromFinallyBlock 
@@ -91,6 +92,7 @@ ruleset {
     IfStatementCouldBeTernary 
     InvertedIfElse 
     LongLiteralWithLowerCaseL 
+    NoDef 
     ParameterReassignment 
     TernaryCouldBeElvis 
     VectorIsObsolete 
@@ -107,12 +109,16 @@ ruleset {
     EmptyMethodInAbstractClass 
     FinalClassWithProtectedMember 
     ImplementationAsType 
+    Instanceof 
+    LocaleSetDefault 
+    NestedForLoop 
     PrivateFieldCouldBeFinal 
     PublicInstanceField 
     ReturnsNullInsteadOfEmptyArray 
     ReturnsNullInsteadOfEmptyCollection 
     SimpleDateFormatMissingLocale 
     StatelessSingleton 
+    ToStringReturnsNull 
     
     // rulesets/dry.xml
     DuplicateListLiteral 
@@ -136,6 +142,7 @@ ruleset {
     CatchThrowable 
     ConfusingClassNamedException 
     ExceptionExtendsError 
+    ExceptionExtendsThrowable 
     ExceptionNotThrown 
     MissingNewInThrowStatement 
     ReturnNullFromCatchBlock 
@@ -147,13 +154,19 @@ ruleset {
     ThrowThrowable 
     
     // rulesets/formatting.xml
+    BlankLineBeforePackage 
     BracesForClass 
     BracesForForLoop 
     BracesForIfElse 
     BracesForMethod 
     BracesForTryCatchFinally 
     ClassJavadoc 
+    ClosureStatementOnOpeningLineOfMultipleLineClosure 
+    ConsecutiveBlankLines 
+    FileEndsWithoutNewline 
     LineLength 
+    MissingBlankLineAfterImports 
+    MissingBlankLineAfterPackage 
     SpaceAfterCatch 
     SpaceAfterClosingBrace 
     SpaceAfterComma 
@@ -164,15 +177,19 @@ ruleset {
     SpaceAfterSwitch 
     SpaceAfterWhile 
     SpaceAroundClosureArrow 
+    SpaceAroundMapEntryColon 
     SpaceAroundOperator 
     SpaceBeforeClosingBrace 
     SpaceBeforeOpeningBrace 
+    TrailingWhitespace 
     
     // rulesets/generic.xml
     IllegalClassMember 
     IllegalClassReference 
     IllegalPackageReference 
     IllegalRegex 
+    IllegalString 
+    IllegalSubclass 
     RequiredRegex 
     RequiredString 
     StatelessClass 
@@ -184,6 +201,7 @@ ruleset {
     GrailsDomainWithServiceReference 
     GrailsDuplicateConstraint 
     GrailsDuplicateMapping 
+    GrailsMassAssignment 
     GrailsPublicControllerMethod 
     GrailsServletContextReference 
     GrailsSessionReference   // DEPRECATED
@@ -228,6 +246,7 @@ ruleset {
     ImportFromSamePackage 
     ImportFromSunPackages 
     MisorderedStaticImports 
+    NoWildcardImports 
     UnnecessaryGroovyImport 
     UnusedImport 
     
@@ -246,6 +265,7 @@ ruleset {
     JUnitLostTest 
     JUnitPublicField 
     JUnitPublicNonTestMethod 
+    JUnitPublicProperty 
     JUnitSetUpCallsSuper 
     JUnitStyleAssertions 
     JUnitTearDownCallsSuper 
@@ -283,6 +303,7 @@ ruleset {
     MethodName 
     ObjectOverrideMisspelledMethodName 
     PackageName 
+    PackageNameMatchesFilePath 
     ParameterName 
     PropertyName 
     VariableName 
@@ -324,6 +345,7 @@ ruleset {
     UnnecessaryBooleanInstantiation 
     UnnecessaryCallForLastElement 
     UnnecessaryCallToSubstring 
+    UnnecessaryCast 
     UnnecessaryCatchBlock 
     UnnecessaryCollectCall 
     UnnecessaryCollectionCall 
@@ -352,11 +374,13 @@ ruleset {
     UnnecessaryParenthesesForMethodCallWithClosure 
     UnnecessaryPublicModifier 
     UnnecessaryReturnKeyword 
+    UnnecessarySafeNavigationOperator 
     UnnecessarySelfAssignment 
     UnnecessarySemicolon 
     UnnecessaryStringInstantiation 
     UnnecessarySubstring 
     UnnecessaryTernaryExpression 
+    UnnecessaryToString 
     UnnecessaryTransientModifier 
     
     // rulesets/unused.xml

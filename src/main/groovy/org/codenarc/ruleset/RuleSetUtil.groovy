@@ -28,6 +28,7 @@ import org.codenarc.util.io.ResourceFactory
   */
 class RuleSetUtil {
 
+    protected static final String CLASS_LOADER_SYS_PROP = 'codenarc.useCurrentThreadContextClassLoader'
     private static final ResourceFactory RESOURCE_FACTORY = new DefaultResourceFactory()
 
     protected static void assertClassImplementsRuleInterface(Class ruleClass) {
@@ -43,8 +44,11 @@ class RuleSetUtil {
         def inputStream = RESOURCE_FACTORY.getResource(path).inputStream
         Class ruleClass
         inputStream.withStream { input ->
-            GroovyClassLoader gcl = new GroovyClassLoader(getClass().classLoader)
-            ruleClass = gcl.parseClass(input)
+            ClassLoader parentClassLoader = (System.getProperty(CLASS_LOADER_SYS_PROP) == 'true') ?
+                Thread.currentThread().getContextClassLoader() :
+                getClass().classLoader
+            GroovyClassLoader gcl = new GroovyClassLoader(parentClassLoader)
+            ruleClass = gcl.parseClass(input.text)
         }
         assertClassImplementsRuleInterface(ruleClass)
         ruleClass.newInstance()

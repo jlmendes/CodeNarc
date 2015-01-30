@@ -8,7 +8,7 @@
         These rules find formatting problems within the source code.
     </description>
 
-
+    <rule class='org.codenarc.rule.formatting.BlankLineBeforePackageRule'/>
     <rule class='org.codenarc.rule.formatting.BracesForClassRule'/>
     <rule class='org.codenarc.rule.formatting.LineLengthRule'/>
     <rule class='org.codenarc.rule.formatting.BracesForForLoopRule'/>
@@ -16,6 +16,11 @@
     <rule class='org.codenarc.rule.formatting.BracesForMethodRule'/>
     <rule class='org.codenarc.rule.formatting.BracesForTryCatchFinallyRule'/>
     <rule class='org.codenarc.rule.formatting.ClassJavadocRule'/>
+    <rule class='org.codenarc.rule.formatting.ClosureStatementOnOpeningLineOfMultipleLineClosureRule'/>
+    <rule class='org.codenarc.rule.formatting.ConsecutiveBlankLinesRule'/>
+    <rule class='org.codenarc.rule.formatting.FileEndsWithoutNewlineRule'/>
+    <rule class='org.codenarc.rule.formatting.MissingBlankLineAfterImportsRule'/>
+    <rule class='org.codenarc.rule.formatting.MissingBlankLineAfterPackageRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceAfterCatchRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceAfterClosingBraceRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceAfterCommaRule'/>
@@ -26,7 +31,9 @@
     <rule class='org.codenarc.rule.formatting.SpaceAfterSwitchRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceAfterWhileRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceAroundClosureArrowRule'/>
+    <rule class='org.codenarc.rule.formatting.SpaceAroundMapEntryColonRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceAroundOperatorRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceBeforeClosingBraceRule'/>
     <rule class='org.codenarc.rule.formatting.SpaceBeforeOpeningBraceRule'/>
+    <rule class='org.codenarc.rule.formatting.TrailingWhitespaceRule'/>
 </ruleset>

@@ -10,6 +10,10 @@ Enhanced Classpath Rules ("<rulesets/enhanced.xml>")
   compiler phase requires <<CodeNarc>> to have the application classes being analyzed, as well as
   any referenced classes, on the classpath.
 
+  Note that these rules may be reorganized and moved to a other rulesets or packages. If possible, include
+  them individually within your ruleset -- refer to them using the rule name, e.g. "CloneWithoutCloneable",
+  rather that pulling in the entire "<rulesets/enhanced.xml>" ruleset, to protect against future reorganization.
+
 
 * {CloneWithoutCloneable} Rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -17,7 +21,7 @@ Enhanced Classpath Rules ("<rulesets/enhanced.xml>")
 
   The method clone() should only be declared if the class implements the Cloneable interface.
 
-  NOTE: This is a {{{codenarc-enhanced-classpath-rules.html}CodeNarc Enhanced Classpath Rule}}.
+  NOTE: This is a {{{./codenarc-enhanced-classpath-rules.html}CodeNarc Enhanced Classpath Rule}}.
   It requires <<CodeNarc>> to have the application classes being analyzed, as well as any referenced classes, on the classpath.
 
   Example of violations:
@@ -37,7 +41,7 @@ Enhanced Classpath Rules ("<rulesets/enhanced.xml>")
   Reports usages of <<<org.junit.Assert.assertEquals([message,] expected, actual)>>> where the <<<actual>>> parameter
   is a constant or a literal. Most likely it was intended to be the <<<expected>>> value.
 
-  NOTE: This is a {{{codenarc-enhanced-classpath-rules.html}CodeNarc Enhanced Classpath Rule}}.
+  NOTE: This is a {{{./codenarc-enhanced-classpath-rules.html}CodeNarc Enhanced Classpath Rule}}.
   It requires <<CodeNarc>> to have the application classes being analyzed, as well as any referenced classes, on the classpath.
 
   Example of violations:
@@ -58,7 +62,7 @@ Enhanced Classpath Rules ("<rulesets/enhanced.xml>")
 
   By default, this rule does not apply to test files.
 
-  NOTE: This is a {{{codenarc-enhanced-classpath-rules.html}CodeNarc Enhanced Classpath Rule}}.
+  NOTE: This is a {{{./codenarc-enhanced-classpath-rules.html}CodeNarc Enhanced Classpath Rule}}.
   It requires <<CodeNarc>> to have the application classes being analyzed, as well as any referenced classes, on the classpath.
 
   Example of violations:

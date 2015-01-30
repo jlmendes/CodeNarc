@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 package org.codenarc.rule.formatting
+
 import org.codehaus.groovy.ast.ASTNode
 import org.codehaus.groovy.ast.ClassNode
 import org.codenarc.rule.AbstractRule
 import org.codenarc.rule.Violation
 import org.codenarc.source.SourceCode
 import org.codenarc.util.AstUtil
+
 /**
  * Checks the location of the opening brace ({) for classes. By default, requires them on the same line, but the sameLine property can be set to false to override this.
  *
@@ -40,12 +42,12 @@ class BracesForClassRule extends AbstractRule {
             // Groovy 1.7 returns -1 as line number for a ClassNode representing an enum.
             // In this case we ignore the rule
             if (lineNumber != -1) {
-                applyTo(classNode, lineNumber, sourceLine, violations)
+                applyToClassNode(classNode, lineNumber, sourceLine, violations)
             }
         }
     }
 
-    private applyTo(ClassNode classNode, int lineNumber, String sourceLine, List violations) {
+    private applyToClassNode(ClassNode classNode, int lineNumber, String sourceLine, List violations) {
         if (sameLine) {
             if (sourceLine?.startsWith('{')) {
                 violations.add(new Violation(

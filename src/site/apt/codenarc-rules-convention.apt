@@ -85,6 +85,7 @@ Convention Rules  ("<rulesets/convention.xml>")
   * A block where the second-to-last statement in a block is an <<<if>>> statement with no <<<else>>>, where
     the block contains a single <<<return>>> statement, and the last statement in the block is a <<<return>>>
     statement, and both <<<return>>> statements return a constant or literal value.
+    This check is disabled by setting <<<checkLastStatementImplicitElse>>> to <<<false>>>.
 
   Example of violations:
 
@@ -128,6 +129,24 @@ Convention Rules  ("<rulesets/convention.xml>")
     def x = 1l
     def y = 55l
 -------------------------------------------------------------------------------
+
+
+* {NoDef} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  <Since CodeNarc 0.22>
+
+  Do not allow using the <<<def>>> keyword in code. Use a specific type instead.
+
+*-------------------------------+----------------------------------------------------------------+---------------------+
+| <<Property>>                  | <<Description>>                                                | <<Default Value>>   |
+*-------------------------------+----------------------------------------------------------------+---------------------+
+| excludeRegex                  | Regular expression describing names of attributes, parameters  | <<<>>>              |
+|                               | or methods that could be precede by the <<<def>>> keyword.     |                     |
+*-------------------------------+----------------------------------------------------------------+---------------------+
+
+  <<NOTE:>> This rule applies to the text contents of a <file> rather than a specific <class>,
+  so it does not support the <applyToClassNames> and <doNotApplyToClassNames> configuration properties.
 
 
 * {ParameterReassignment} Rule

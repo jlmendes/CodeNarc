@@ -6,6 +6,13 @@ Formatting Rules  ("<rulesets/formatting.xml>")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+* {BlankLineBeforePackage} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Makes sure there are no blank lines before the package declaration of a source code file.
+
+
 * {BracesForClass} Rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   <Since CodeNarc 0.15>
@@ -56,7 +63,53 @@ Formatting Rules  ("<rulesets/formatting.xml>")
   the class that has the same name as the source file, for instance MyClass is the main class in MyClass.groovy but the class
   MyOtherClass defined in the same source file is not the main class. To check all the classes in the file set the rule
   property <<<applyToNonMainClasses>>> to true.
-  
+
+
+* {ClosureStatementOnOpeningLineOfMultipleLineClosure} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.20>
+
+  Checks for closure logic on first line (after <<<-\>>>>) for a multi-line closure. That breaks the symmetry
+  of indentation (if the subsequent statements are indented normally), and that first statement can be easily
+  missed when reading the code.
+
+  Example of violations:
+
+-------------------------------------------------------------------------------
+    def closure = { name -> println name
+        addToCounts()
+        println “done” }
+-------------------------------------------------------------------------------
+
+
+* {ConsecutiveBlankLines} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Makes sure there are no consecutive lines that are either blank or whitespace only. This reduces the need to scroll
+  further than necessary when reading code, and increases the likelihood that a logical block of code will fit on one
+  screen for easier comprehension.
+
+  Example of violation:
+
+-------------------------------------------------------------------------------
+    def name
+
+
+    def value
+
+
+
+    def id
+-------------------------------------------------------------------------------
+
+
+* {FileEndsWithoutNewline} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Makes sure each source file ends with a newline character.
+
 
 * {LineLength} Rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -70,6 +123,39 @@ Formatting Rules  ("<rulesets/formatting.xml>")
   (applyToClassNames, doNotApplyToClassNames) to enable/disable the rule. If you want to specify or restrict
   where this rule is applied, you must use the file-based rule properties: applyToFileNames, doNotApplyToFileNames,
   applyToFilesMatching and doNotApplyToFilesMatching.
+
+
+* {MissingBlankLineAfterImports} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Makes sure there is a blank line after the imports of a source code file.
+  
+  Example of violation:
+
+-------------------------------------------------------------------------------
+    import org.apache.commons.lang.StringUtils
+    class MyClass { }                       // violation
+-------------------------------------------------------------------------------
+
+
+* {MissingBlankLineAfterPackage} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Makes sure there is a blank line after the package statement of a source code file.
+  
+  Example of violation:
+  
+-------------------------------------------------------------------------------
+  package org.codenarc
+  import java.util.Date                     // violation
+
+  class MyClass {
+      void go() { /* ... */ }
+  }
+-------------------------------------------------------------------------------
+
 
 * {SpaceAfterCatch} Rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -121,7 +207,7 @@ Formatting Rules  ("<rulesets/formatting.xml>")
   method/class/interface declarations, closure expressions and block statements.
 
   A closure expression followed by a dot operator (.), a comma, a closing parenthesis, the
-  spread-dot operator (*.) or the null-safe operator (?.) does not cause a violation.
+  spread-dot operator (*.), a semicolon or the null-safe operator (?.) does not cause a violation.
 
 
 *---------------------------+------------------------------------------------------------------+------------------------+
@@ -195,6 +281,9 @@ Formatting Rules  ("<rulesets/formatting.xml>")
 |                           | braces for closure expressions that are literal Map values, e.g. |                        |
 |                           | <<<[abc:{doStuff()}]>>>.                                         |                        |
 *---------------------------+------------------------------------------------------------------+------------------------+
+| ignoreEmptyBlock          | If <<<true>>>, then allow for <<<[{}]>>> in code                 | <<<false>>>            |
+*---------------------------+------------------------------------------------------------------+------------------------+
+
 
   Examples of violations:
 
@@ -309,12 +398,43 @@ Formatting Rules  ("<rulesets/formatting.xml>")
 -------------------------------------------------------------------------------
 
 
+* {SpaceAroundMapEntryColon} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.20>
+
+  Check for proper formatting of whitespace around colons for literal Map entries. By default, no whitespace
+  is allowed either before or after the Map entry colon, but you can change that through the configuration
+  properties below.
+
+*---------------------------+------------------------------------------------------------------+------------------------+
+| <<Property>>              | <<Description>>                                                  | <<Default Value>>      |
+*---------------------------+------------------------------------------------------------------+------------------------+
+| characterBeforeColonRegex | The regular expression that must match the character before      | <<</\\S/>>>             |
+|                           | the colon (:) for a literal <Map> entry. For example, <<</\\S/>>> |                        |
+|                           | matches any non-whitespace character and <<</\\s/>>> matches any  | (i.e., no space allowed                       |
+|                           | whitespace character (thus requiring a space or whitespace).     |  before the colon)     |
+*---------------------------+------------------------------------------------------------------+------------------------+
+| characterAfterColonRegex  | The regular expression that must match the character after       | <<</\\S/>>>             |
+|                           | the colon (:) for a literal <Map> entry. For example, <<</\\S/>>> |                        |
+|                           | matches any non-whitespace character and <<</\\s/>>> matches any  | (i.e., no space allowed                       |
+|                           | whitespace character (thus requiring a space or whitespace).     |  before the colon)     |
+*---------------------------+------------------------------------------------------------------+------------------------+
+
+  Example of violations:
+
+-------------------------------------------------------------------------------
+    Map m1 = [myKey : 12345]            // violation (both before and after the colon)
+    println [a :[1:11, 2:22],           // violation on a (before colon)
+                b:[(Integer): 33]]      // violation on Integer (after colon)
+-------------------------------------------------------------------------------
+
+
 * {SpaceAroundOperator} Rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
   <Since CodeNarc 0.18>
 
   Check that there is at least one space (blank) or whitespace around each binary operator,
-  including: +, -, *, /, \>\>, \<\<, &&, ||, &, |, ?:, =.
+  including: +, -, *, /, \>\>, \<\<, &&, ||, &, |, ?:, =, "as".
 
   Do not check dot ('.') operator. Do not check unary operators (!, +, -, ++, --, ?.).
   Do not check array ('[') operator.
@@ -339,6 +459,7 @@ Formatting Rules  ("<rulesets/formatting.xml>")
         x ||y                       // violation
         x &y                        // violation
         x| y                        // violation
+        [1,2]as String              // violation
     }
 -------------------------------------------------------------------------------
 
@@ -356,6 +477,8 @@ Formatting Rules  ("<rulesets/formatting.xml>")
 | checkClosureMapEntryValue | If <<<false>>>, then do not check for whitespace before closing  | <<<true>>>             |
 |                           | braces for closure expressions that are literal Map values, e.g. |                        |
 |                           | <<<[abc:{doStuff()}]>>>.                                         |                        |
+*---------------------------+------------------------------------------------------------------+------------------------+
+| ignoreEmptyBlock          | If <<<true>>>, then allow for <<<[{}]>>> in code                 | <<<false>>>            |
 *---------------------------+------------------------------------------------------------------+------------------------+
 
   Known limitations:
@@ -457,3 +580,11 @@ Formatting Rules  ("<rulesets/formatting.xml>")
 
     shouldFail(Exception){ doStuff() }          // violation
 -------------------------------------------------------------------------------
+
+
+* {TrailingWhitespace} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Checks that no lines of source code end with whitespace characters.
+

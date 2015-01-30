@@ -201,6 +201,14 @@ c        '''
     }
 
     @Test
+    void testApplyTo_Switch_Violations() {
+        final SOURCE = '''
+            switch (var){ }
+        '''
+        assertSingleViolation(SOURCE, 2, 'switch (var){ }', 'The opening brace for the switch statement in class None')
+    }
+
+    @Test
     void testApplyTo_Closure_Violations() {
         final SOURCE = '''
             list.each{ name -> }
@@ -231,6 +239,22 @@ c        '''
         '''
         rule.checkClosureMapEntryValue = false
         assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_CheckClosureAsFirstMethodParameter_NoViolations() {
+        final SOURCE = '''
+            execute({ println 7 }, true)
+        '''
+        assertNoViolations(SOURCE)
+    }
+
+    @Test
+    void testApplyTo_GStringWithClosure_NoViolations() {
+        assertNoViolations('''
+            def foo = 1
+            "I am a ${ -> foo }"
+        ''')
     }
 
     protected Rule createRule() {

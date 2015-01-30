@@ -5,6 +5,8 @@
 Security Rules  ("<rulesets/security.xml>")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  Also see {{{./codenarc-rules-grails.html#GrailsMassAssignment}GrailsMassAssignment}}.
+
 
 * {FileCreateTempFile} Rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -207,5 +209,3 @@ Security Rules  ("<rulesets/security.xml>")
         public static final def myArray = [] as String[]
     }
 -------------------------------------------------------------------------------
-
-

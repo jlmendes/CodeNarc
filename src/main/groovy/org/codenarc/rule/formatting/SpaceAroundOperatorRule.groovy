@@ -16,6 +16,7 @@
 package org.codenarc.rule.formatting
 
 import org.codehaus.groovy.ast.expr.BinaryExpression
+import org.codehaus.groovy.ast.expr.CastExpression
 import org.codenarc.rule.AbstractAstVisitor
 import org.codenarc.rule.AbstractAstVisitorRule
 import org.codehaus.groovy.ast.expr.TernaryExpression
@@ -27,7 +28,7 @@ import org.codehaus.groovy.ast.expr.BooleanExpression
 
 /**
  * Check that there is at least one space (blank) or whitespace around each binary operator,
- * including: +, -, *, /, >>, <<, &&, ||, &, |, ?:, =.
+ * including: +, -, *, /, >>, <<, &&, ||, &, |, ?:, =, as.
  *
  * Do not check dot ('.') operator. Do not check unary operators (!, +, -, ++, --, ?.).
  * Do not check array ('[') operator.
@@ -109,15 +110,13 @@ class SpaceAroundOperatorAstVisitor extends AbstractAstVisitor {
 
     private void processElvisExpression(ElvisOperatorExpression expression) {
         def line = sourceCode.lines[expression.lineNumber - 1]
-        def beforeChar = line[expression.columnNumber - 2] as char
-
-        // Known limitation: standalone elvis expression has messed up columnNumber/lastColumnNumber
-        if (expression.lastColumnNumber == expression.columnNumber + 2 && !Character.isWhitespace(beforeChar)) {
-            addViolation(expression, "The operator \"?:\" within class $currentClassName is not preceded by a space or whitespace")
-        }
-
-        if (expression.lastColumnNumber == leftMostColumn(expression.falseExpression)) {
-            addViolation(expression, "The operator \"?:\" within class $currentClassName is not followed by a space or whitespace")
+        if (line.contains('?:')) {
+            if (!(line =~ /\s\?\:/)) {
+                addViolation(expression, "The operator \"?:\" within class $currentClassName is not preceded by a space or whitespace")
+            }
+            if (!(line =~ /\?\:\s/)) {
+                addViolation(expression, "The operator \"?:\" within class $currentClassName is not followed by a space or whitespace")
+            }
         }
     }
 
@@ -152,6 +151,21 @@ class SpaceAroundOperatorAstVisitor extends AbstractAstVisitor {
             }
         }
         super.visitBinaryExpression(expression)
+    }
+
+    @Override
+    void visitCastExpression(CastExpression expression) {
+        if (expression.coerce && expression.lineNumber != -1) {
+            boolean containsAsWithSpaces = (expression.lineNumber..expression.lastLineNumber).find { lineNumber ->
+                String line = sourceCode.lines[lineNumber - 1]
+                return line.find(/\sas\s/)
+            }
+
+            if (!containsAsWithSpaces) {
+                addViolation(expression, "The operator \"as\" within class $currentClassName is not surrounded by a space or whitespace")
+            }
+        }
+        super.visitCastExpression(expression)
     }
 
     private int rightMostColumn(expression) {

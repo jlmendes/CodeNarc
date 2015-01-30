@@ -123,6 +123,56 @@ abstract class AbstractRuleTestCase extends AbstractTestCase {
 
     /**
      * Apply the current Rule to the specified source (String) and assert that it results
+     * in the violations specified inline within the source.<p>
+     *
+     * Inline violations can be specified either by using the {@link #inlineViolation(java.lang.String)} method
+     * or simply by prefixing a violation message with a '#'. Multiple inline violations per line are allowed.<p>
+     *
+     * One can prevent a '#' character from starting a violation message by escaping it with a '\' character
+     * (keep in mind that most of Groovy's string literal syntax demands the '\' to be escaped itself,
+     * as a '\\' sequence).<p> 
+     *
+     * For every source line all text after the first non-escaped '#' character is part of some inline violation message
+     * (with the sole exception of the first line of a Groovy script beginning with a shebang).
+     * More precisely, every '#' character that is neither escaped nor part of a shebang starts an inline violation that
+     * spans to the end of its line or until next non-escaped '#' character.<p>
+     *     
+     * See the {@link #inlineViolation(java.lang.String)} method.<br>    
+     * See the {@link #removeInlineViolations(java.lang.String)} method.<br>    
+     *
+     * @param source - the full source code to which the rule is applied annotated with inline violations, as a String
+     */
+    protected void assertInlineViolations(String annotatedSource) {
+        def parseResult = new InlineViolationsParser().parse(annotatedSource)
+        def violationsMap = parseResult.violations as Map[]
+        assertViolations(parseResult.source, violationsMap)
+        assert violationsMap, 'There must be at least one inline violation specified. If no violations are intended, then use assertNoViolations() instead'
+    }
+
+    /**
+     * Prepares an inline violation with a given message, escaping all '#' characters and preventing accidental 
+     * escaping of next inline violation's start when the message ends with a '\' character.
+     *
+     * @param violationMessage message for the inline violation
+     * @return a String that will be interpreted as an inline violation by the 
+     * {@link #assertInlineViolations(java.lang.String)} method 
+     */
+    protected static String inlineViolation(String violationMessage) {
+        return InlineViolationsParser.inlineViolation(violationMessage)
+    }
+
+    /**
+     * Removes all inline violations from a source.
+     *
+     * @param annotatedSource source possibly containing inline violations
+     * @return the given source with inline violations removed
+     */
+    protected static String removeInlineViolations(String annotatedSource) {
+        return new InlineViolationsParser().parse(annotatedSource).source
+    }
+
+    /**
+     * Apply the current Rule to the specified source (String) and assert that it results
      * in the violations specified in violationMaps.
      * @param source - the full source code to which the rule is applied, as a String
      * @param violationMaps - a list (array) of Maps, each describing a single violation.
@@ -149,6 +199,7 @@ abstract class AbstractRuleTestCase extends AbstractTestCase {
      * @param sourceLineText2 - the text expected within the sourceLine of the second violation
      * @param msg2 - the text expected within the message of the second violation; May be a String or List of Strings; Defaults to null;
      */
+    @SuppressWarnings('ParameterCount')
     protected void assertTwoViolations(String source,
             Integer lineNumber1, String sourceLineText1, msg1,
             Integer lineNumber2, String sourceLineText2, msg2) {

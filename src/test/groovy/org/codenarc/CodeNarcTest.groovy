@@ -32,19 +32,21 @@ import static org.codenarc.test.TestUtil.shouldFailWithMessageContaining
  * @author Chris Mair
  */
 class CodeNarcTest extends AbstractTestCase {
-    static final BASE_DIR = 'src/test/resources'
-    static final BASIC_RULESET = 'rulesets/basic.xml'
-    static final RULESET1 = 'rulesets/RuleSet1.xml'
-    static final INCLUDES = 'sourcewithdirs/**/*.groovy'
-    static final EXCLUDES = '**/*File2.groovy'
-    static final TITLE = 'My Title'
-    static final HTML_REPORT_FILE = new File('CodeNarcTest-Report.html').absolutePath
-    static final HTML_REPORT_STR = "html:$HTML_REPORT_FILE"
-    static final XML_REPORT_FILE = 'CodeNarcTest-Report.xml'
-    static final XML_REPORT_STR = "xml:$XML_REPORT_FILE"
+
+    private static final BASE_DIR = 'src/test/resources'
+    private static final BASIC_RULESET = 'rulesets/basic.xml'
+    private static final RULESET1 = 'rulesets/RuleSet1.xml'
+    private static final INCLUDES = 'sourcewithdirs/**/*.groovy'
+    private static final EXCLUDES = '**/*File2.groovy'
+    private static final TITLE = 'My Title'
+    private static final HTML_REPORT_FILE = new File('CodeNarcTest-Report.html').absolutePath
+    private static final HTML_REPORT_STR = "html:$HTML_REPORT_FILE"
+    private static final XML_REPORT_FILE = 'CodeNarcTest-Report.xml'
+    private static final XML_REPORT_STR = "xml:$XML_REPORT_FILE"
 
     private codeNarc
     private outputFile
+    private int exitCode
 
     @Test
     void testParseArgs_InvalidOptionName() {
@@ -189,6 +191,7 @@ class CodeNarcTest extends AbstractTestCase {
         assert codeNarcRunner.reportWriters.size == 1
         def reportWriter = codeNarcRunner.reportWriters[0]
         assertReport(reportWriter, HtmlReportWriter, HTML_REPORT_FILE, TITLE)
+        assert exitCode == 0
     }
 
     @Test
@@ -211,6 +214,7 @@ class CodeNarcTest extends AbstractTestCase {
         assert codeNarcRunner.reportWriters.size == 1
         def reportWriter = codeNarcRunner.reportWriters[0]
         assertReport(reportWriter, HtmlReportWriter, null, null)
+        assert exitCode == 0
     }
 
     @Test
@@ -220,6 +224,7 @@ class CodeNarcTest extends AbstractTestCase {
                 "-title=$TITLE", "-excludes=$EXCLUDES", "-rulesetfiles=$RULESET1"] as String[]
         CodeNarc.main(ARGS)
         assert outputFile.exists()
+        assert exitCode == 0
     }
 
     @Test
@@ -232,6 +237,7 @@ class CodeNarcTest extends AbstractTestCase {
         assert !stdout.contains('ERROR')
         assert stdout.contains(CodeNarc.HELP)
         assert !outputFile.exists()
+        assert exitCode == 0
     }
 
     @Test
@@ -244,6 +250,7 @@ class CodeNarcTest extends AbstractTestCase {
         assert stdout.contains(ARGS[1])
         assert stdout.contains(CodeNarc.HELP)
         assert !outputFile.exists()
+        assert exitCode == 1
     }
 
     @Test
@@ -256,6 +263,7 @@ class CodeNarcTest extends AbstractTestCase {
         assert stdout.contains(ARGS[0])
         assert stdout.contains(CodeNarc.HELP)
         assert !outputFile.exists()
+        assert exitCode == 1
     }
 
     //--------------------------------------------------------------------------
@@ -263,13 +271,14 @@ class CodeNarcTest extends AbstractTestCase {
     //--------------------------------------------------------------------------
 
     @Before
-    void setUpCodeNarcTest() {
+    void setUp() {
         codeNarc = new CodeNarc()
+        codeNarc.systemExit = { code -> exitCode = code }
         outputFile = new File(HTML_REPORT_FILE)
     }
 
     @After
-    void tearDownCodeNarcTest() {
+    void tearDown() {
         outputFile.delete()
     }
 

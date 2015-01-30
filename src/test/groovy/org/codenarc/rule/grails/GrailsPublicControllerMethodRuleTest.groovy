@@ -26,8 +26,14 @@ import org.junit.Test
  * @author Chris Mair
   */
 class GrailsPublicControllerMethodRuleTest extends AbstractRuleTestCase {
-    static final CONTROLLER_PATH = 'project/MyProject/grails-app/controllers/com/xxx/MyController.groovy'
-    static final OTHER_PATH = 'project/MyProject/src/groovy/MyHelper.groovy'
+
+    private static final CONTROLLER_PATH = 'project/MyProject/grails-app/controllers/com/xxx/MyController.groovy'
+    private static final OTHER_PATH = 'project/MyProject/src/groovy/MyHelper.groovy'
+
+    @Test
+    void testDisabledByDefault() {
+        assert !new GrailsPublicControllerMethodRule().enabled
+    }
 
     @Test
     void testRuleProperties() {
@@ -118,7 +124,6 @@ class GrailsPublicControllerMethodRuleTest extends AbstractRuleTestCase {
         assertNoViolations(SOURCE)
     }
 
-
     @Test
     void testApplyTo_IgnoreMethodNames_MatchesSingleName() {
         final SOURCE = '''
@@ -154,13 +159,12 @@ class GrailsPublicControllerMethodRuleTest extends AbstractRuleTestCase {
         assertViolations(SOURCE, [lineNumber:5, sourceLineText:'void myMethod()'])
     }
 
-
     @Before
     void setUpGrailsPublicControllerMethodRuleTest() {
         sourceCodePath = CONTROLLER_PATH
     }
 
     protected Rule createRule() {
-        new GrailsPublicControllerMethodRule()
+        new GrailsPublicControllerMethodRule(enabled:true)
     }
 }

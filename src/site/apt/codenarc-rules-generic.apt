@@ -5,6 +5,12 @@
 Generic Rules  ("<rulesets/generic.xml>")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+  These rules provide a generic check that only makes sense when customized. These rules are not <enabled> until
+  the necessary configuration is provided.
+
+  See {{{http://tenpercentnotcrap.wordpress.com/2013/08/04/codenarc-hidden-gems-using-codenarcs-generic-rules/}CodeNarc – Hidden Gems: Using CodeNarc’s generic rules}}
+  for examples of using the <<CodeNarc>> <"generic"> rules to enforce your own custom best practices.
+
 
 * {IllegalClassMember} Rule
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -86,7 +92,7 @@ Generic Rules  ("<rulesets/generic.xml>")
 
   Note that you must use the standard rule properties, such as <<<applyToClassNames>>>, <<<doNotApplyToFileNames>>>
   and <<<applyToFilesMatching>>> to apply this rule to a subset of all classes/files. These rule properties
-  are described in {{{codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
+  are described in {{{./codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
   Standard Properties for Configuring Rules}}.
 
   Example of violations for methods:
@@ -152,7 +158,7 @@ Generic Rules  ("<rulesets/generic.xml>")
 
   Note that you can use the standard rule properties, such as <<<applyToClassNames>>>, <<<doNotApplyToFileNames>>>
   and <<<applyToFilesMatching>>> to only apply this rule to a subset of all classes/files. These rule properties
-  are described in {{{codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
+  are described in {{{./codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
   Standard Properties for Configuring Rules}}.
 
   This rule can be useful for governance and enforcement of <architectural layering>. For instance,
@@ -202,7 +208,7 @@ Generic Rules  ("<rulesets/generic.xml>")
 
   Note that you can use the standard rule properties, such as <<<applyToClassNames>>>, <<<doNotApplyToFileNames>>>
   and <<<applyToFilesMatching>>> to only apply this rule to a subset of all classes/files. These rule properties
-  are described in {{{codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
+  are described in {{{./codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
   Standard Properties for Configuring Rules}}.
 
   This rule can be useful for governance and enforcement of <architectural layering>. For instance,
@@ -249,6 +255,48 @@ Generic Rules  ("<rulesets/generic.xml>")
 
   <<NOTE:>> This rule applies to the text contents of an entire <file> rather than a specific <class>,
   so it does not support the <applyToClassNames> and <doNotApplyToClassNames> configuration properties.
+
+
+* {IllegalString} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.20>
+
+  Checks for a specified illegal string within the source code.
+
+*---------------------+----------------------------------------------------------------+------------------------+
+| <<Property>>        | <<Description>>                                                | <<Default Value>>      |
+*---------------------+----------------------------------------------------------------+------------------------+
+| string              | The String to check for. If null or empty then do nothing.     | <<<null>>>             |
+*---------------------+----------------------------------------------------------------+------------------------+
+
+  A RuleSet can contain any number of instances of this rule, but each should be configured
+  with a unique rule <name> and <string>, and (optionally) customized <violationMessage> and <priority>.
+
+  <<NOTE:>> This rule applies to the text contents of an entire <file> rather than a specific <class>,
+  so it does not support the <applyToClassNames> and <doNotApplyToClassNames> configuration properties.
+
+
+* {IllegalSubclass} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Checks for classes that extend one of the specified set of illegal superclasses.
+
+*---------------------+-----------------------------------------------------------------+------------------------+
+| <<Property>>        | <<Description>>                                                 | <<Default Value>>      |
+*---------------------+-----------------------------------------------------------------+------------------------+
+| superclassNames     | Specifies the comma-separated list of (fully-qualified) class   | <<<null>>>             |
+|                     | names. The class name(s) may optionally include wildcard        |                        |
+|                     | characters ('*' or '?'). Note that the '*' wildcard matches any |                        |
+|                     | sequence of zero or more characters in the class/package name,  |                        |
+|                     | e.g. 'a.*.MyClass' matches <<<a.b.MyClass>>> as well as         |                        |
+|                     | <<<a.b.c.d.MyClass>>>.                                          |                        |
+|                     |                                                                 |                        |
+|                     | If <<<classNames>>> is null or empty, do nothing.               |                        |
+*---------------------+-----------------------------------------------------------------+------------------------+
+
+  A RuleSet can contain any number of instances of this rule, but each should be configured
+  with a unique rule <name> and <string>, and (optionally) customized <violationMessage> and <priority>.
 
 
 * {RequiredRegex} Rule
@@ -328,7 +376,7 @@ Generic Rules  ("<rulesets/generic.xml>")
 
   Note that you can use the standard rule properties, such as <<<applyToClassNames>>>, <<<doNotApplyToFileNames>>>
   and <<<applyToFilesMatching>>> to only apply this rule to a subset of all classes/files. These rule properties
-  are described in {{{codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
+  are described in {{{./codenarc-configuring-rules.html#Standard_Properties_for_Configuring_Rules}
   Standard Properties for Configuring Rules}}.
 
 **  Notes

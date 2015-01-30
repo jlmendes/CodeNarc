@@ -10,7 +10,7 @@
         The CodeNarc project provides a static analysis tool for Groovy code.
     </description>
     <packaging>jar</packaging>
-    <version>0.19</version>
+    <version>0.23-SNAPSHOT</version>
     <url>http://codenarc.sourceforge.net/</url>
 
     <parent>
@@ -27,7 +27,7 @@
         <connection>scm:git:git@github.com:CodeNarc/CodeNarc.git</connection>
         <url>scm:git:git@github.com:CodeNarc/CodeNarc.git</url>
         <developerConnection>scm:git:git@github.com:CodeNarc/CodeNarc.git</developerConnection>
-      <tag>CodeNarc-0.19</tag>
+        <tag>CodeNarc-0.20</tag>
   </scm>
 
     <dependencies>
@@ -115,6 +115,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
                 <configuration>
                     <verbose>true</verbose>
                     <source>1.5</source>
@@ -126,10 +127,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>2.5</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
-                            <CodeNarc-Version>${pom.version}</CodeNarc-Version>
+                            <CodeNarc-Version>${project.version}</CodeNarc-Version>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -138,6 +140,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -172,6 +175,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -196,11 +200,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.1</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.2</version>
             </plugin>
 
         </plugins>

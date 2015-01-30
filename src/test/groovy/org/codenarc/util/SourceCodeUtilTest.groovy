@@ -31,15 +31,15 @@ import static org.codenarc.test.TestUtil.shouldFail
  */
 class SourceCodeUtilTest extends AbstractTestCase {
 
-    static final String SOURCE = '''
+    private static final String SOURCE = '''
         [1, 2, 3].each { println it }
         [1, 2, 3].any {
             it > 3
         }
     '''
 
-    SourceCode sourceCode
-    SourceCodeUtilTestVisitor visitor
+    private SourceCode sourceCode
+    private SourceCodeUtilTestVisitor visitor
 
     @Before
     void setUpSourceCodeUtilTest() {
@@ -50,7 +50,6 @@ class SourceCodeUtilTest extends AbstractTestCase {
         visitor = new SourceCodeUtilTestVisitor()
         visitor.visitClass(sourceCode.ast.scriptClassDummy)
     }
-
 
     @Test
     void testSourceLinesBetweenForSingleLine() {

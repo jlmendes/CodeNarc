@@ -42,13 +42,12 @@ class GenerateCodeNarcRulesProperties {
         LOG.debug("sortedRules=$sortedRules")
         def propertiesFile = new File(propertiesFile)
         propertiesFile.withWriter { writer ->
-            writer.println '# CodeNarc Rules (see PropertiesFileRuleRegistry)'
+            writer.println '# CodeNarc Rules (see PropertiesFileRuleRegistry): ' + new Date()
             sortedRules.each { rule ->
                 writer.println "${rule.name} = ${rule.class.name}"
             }
         }
         LOG.info("Finished writing ${sortedRules.size()} rules to $propertiesFile")
     }
-
 
 }

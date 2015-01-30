@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 the original author or authors.
+ * Copyright 2014 the original author or authors.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,10 @@ import org.codenarc.util.io.ClassPathResource
  * creating a locale-specific resource bundle file on the classpath, such as "codenarc-base-messages_de").
  * You can optionally add rule descriptions for custom rules by placing them within a "codenarc-messages.properties"
  * file on the classpath, with entries of the form: {rule-name}.description=..."
- *
+ * <p/>
+ * Set the includeSummaryByPackage property to false to exclude the violation summary for each package
+ * within the "Summary" section of the report. It defaults to true.
+ * <p/>
  * Set the maxPriority property to control the maximum priority level for violations in
  * the report. For instance, setting maxPriority to 2 will result in the report containing
  * only priority 1 and 2 violations (and omitting violations with priority 3). The
@@ -49,6 +52,7 @@ class HtmlReportWriter extends AbstractReportWriter {
 
     String title
     String defaultOutputFile = DEFAULT_OUTPUT_FILE
+    boolean includeSummaryByPackage = true
     int maxPriority = 3
 
     /**
@@ -107,6 +111,7 @@ class HtmlReportWriter extends AbstractReportWriter {
                 h1(getResourceBundleString('htmlReport.titlePrefix'))
                 out << buildReportMetadata()
                 out << buildSummaryByPackage(results)
+
                 out << buildAllPackageSections(results)
                 out << buildRuleDescriptions(analysisContext)
             }
@@ -154,7 +159,9 @@ class HtmlReportWriter extends AbstractReportWriter {
                         }
                     }
                     out << buildSummaryByPackageRow(results, true)
-                    out << buildAllSummaryByPackageRowsRecursively(results)
+                    if (includeSummaryByPackage) {
+                        out << buildAllSummaryByPackageRowsRecursively(results)
+                    }
                 }
             }
         }
@@ -327,7 +334,6 @@ class HtmlReportWriter extends AbstractReportWriter {
         }
         return source
     }
-
 
     /**
      * Return true if the Results represents a directory that contains at least one file with one

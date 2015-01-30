@@ -94,7 +94,13 @@ Unnecessary Rules  ("<rulesets/unnecessary.xml>")
   or the 'G' identifier to force the type, such as <<<123.45>>> or <<<123.45G>>>.
 
   This rule does not produce violations when the parameter evaluates to an integer/long, e.g.
-  <<<new BigDecimal(42)>>>, <<<new BigDecimal(42L)>>> or <<<new BigDecimal("42")>>>.
+  <<<new BigDecimal(42)>>>, <<<new BigDecimal(42L)>>> or <<<new BigDecimal("42")>>>, because using the
+  "G" suffix on an integer value produces a <<<BigInteger>>>, rather than a <<<BigDecimal>>>, e.g. <<<45G>>>.
+  So that means there is no way to produce a <<<BigDecimal>>> with exactly that value using a literal.
+
+  This rule also does not produce violations when the parameter is a double, e.g. <<<new BigDecimal(12.3)>>>.
+  That scenario is covered by the {{{./codenarc-rules-basic.html#BigDecimalInstantiation}BigDecimalInstantiation}}
+  rule, because that produces an unpredictable (double) value (and so it is <unsafe>, rather than <unnecessary>).
 
 
 * {UnnecessaryBigIntegerInstantiation} Rule
@@ -215,6 +221,24 @@ Unnecessary Rules  ("<rulesets/unnecessary.xml>")
 
     prop.substring(1)           // OK, not constant 0
     prop.substring(0, 1)        // OK, end is specified
+-------------------------------------------------------------------------------
+
+
+* {UnnecessaryCast} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Checks for unnecessary cast operations.
+
+  Example of violations:
+
+-------------------------------------------------------------------------------
+    int count = (int)123                    // violation
+    def longValue = (long)123456L           // violation
+    def bigDecimal = (BigDecimal)1234.56    // violation
+    String name = (String) "Joe"            // violation
+    def list = (List)[1, 2, 3]              // violation
+    def map = (Map)[a:1]                    // violation
 -------------------------------------------------------------------------------
 
 
@@ -584,6 +608,7 @@ Unnecessary Rules  ("<rulesets/unnecessary.xml>")
   (3) When the second-to-last statement in a block is an <<<if>>> statement with no <<<else>>>, where the block
   contains a single <<<return>>> statement, and the last statement in the block is a <<<return>>> statement, and
   one <<<return>>> statement returns a <<<true>>> expression and the other returns a <<<false>>> expression.
+  This check is disabled by setting <<<checkLastStatementImplicitElse>>> to <<<false>>>.
   For example, the <<<if>>> statement in the following code can be replaced by <<<return expression1>>>:
 
 -------------------------------------------------------------------------------
@@ -874,8 +899,12 @@ Unnecessary Rules  ("<rulesets/unnecessary.xml>")
   * Does not catch class declarations that explicitly extend <<<java.lang.Object>>>. For instance,
     <<<class MyClass extends java.lang.Object { }>>>. Just don't do that, okay?
 
+  * Does not catch class declarations that explicitly extend <<<groovy.lang.Script>>>. For instance,
+    <<<class MyScript extends groovy.lang.Script{ }>>>. Don't do that, either!
+
   * Does not catch unnecessary package references if they are the types of anonymous inner class
-    definitions. For instance, <<<def runnable = new java.lang.Runnable() { ... }>>>.
+    definitions, for older versions of Groovy (< 1.7.10?). For instance,
+    <<<def runnable = new java.lang.Runnable() { ... }>>>.
 
 
 * {UnnecessaryParenthesesForMethodCallWithClosure} Rule
@@ -917,6 +946,33 @@ Unnecessary Rules  ("<rulesets/unnecessary.xml>")
 
   In Groovy, the <<<return>>> keyword is often optional. If a statement is the last line in a method or
   closure then you do not need to have the <<<return>>> keyword.
+
+
+* {UnnecessarySafeNavigationOperator} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  <Since CodeNarc 0.22>
+
+  Check for the <safe navigation> operator (<<<?.>>>) applied to constants and literals, or <<<this>>>
+  or <<<super>>>, or constructor calls, all of which can never be null.
+
+  Example of violations:
+
+-------------------------------------------------------------------------------
+    def myMethod() {
+        "abc"?.bytes            // violation
+        [1,2]?.getSize()        // violation
+        [abc:123]?.name         // violation
+        [:]?.toString()         // violation
+        123?.class              // violation
+        123.45?.getClass()      // violation
+        Boolean.FALSE?.class    // violation
+        Boolean.TRUE?.class     // violation
+        this?.class             // violation
+        super?.getClass()       // violation
+        new Long(100)?.class    // violation
+    }
+-------------------------------------------------------------------------------
 
 
 * {UnnecessarySelfAssignment} Rule
@@ -1058,6 +1114,43 @@ Unnecessary Rules  ("<rulesets/unnecessary.xml>")
     class MySerializableClass implements Serializable {
         // OK, class is serializable
         transient String property
+    }
+-------------------------------------------------------------------------------
+
+
+* {UnnecessaryToString} Rule
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  <Since CodeNarc 0.21>
+
+  Checks for unnecessary calls to <<<toString()>>>. This includes:
+
+     * Calls to <<<toString()>>> on a String literal or expression
+
+     * Calls to <<<toString()>>> for the value assigned to a <<<String>>> field or variable (if <checkAssignments> is <<<true>>>).
+
+     []
+
+*------------------+----------------------------------------------------------------+------------------------+
+| <<Property>>     | <<Description>>                                                | <<Default Value>>      |
+*------------------+----------------------------------------------------------------+------------------------+
+| checkAssignments | If <<<true>>>, then check for calls to <<<toString()>>> for    | <<<true>>>             |
+|                  | the value assigned to a <<<String>>> field or variable.        |                        |
+*------------------+----------------------------------------------------------------+------------------------+
+
+  Example of violations:
+
+-------------------------------------------------------------------------------
+    def name = "Joe".toString()                             // violation - string literal
+    def groupId = ((String)row.get('GroupID')).toString()   // violation - string expression
+
+    class MyClass {
+        String name = nameNode.toString()           // violation - field
+        String code = account.getCode().toString()  // violation - field
+
+        void run() {
+            String name = nameNode.toString()       // violation - variable
+            String id = account.id.toString()       // violation - variable
+        }
     }
 -------------------------------------------------------------------------------
 
